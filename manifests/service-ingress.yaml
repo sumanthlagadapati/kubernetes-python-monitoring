@@ -18,8 +18,12 @@ metadata:
   name: python-app-ingress
   namespace: python-app
   annotations:
+    # AWS ALB Ingress Controller annotations
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  ingressClassName: alb # Use AWS ALB Ingress Class
   rules:
   - http:
       paths:

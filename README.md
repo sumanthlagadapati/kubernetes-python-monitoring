@@ -49,6 +49,15 @@ kubernetes-python-monitoring/
     kubectl apply -f monitoring/prometheus-grafana.yaml
     ```
 
+## AWS Implementation
+
+For deploying this project on **Amazon EKS** with **Amazon ECR**, please refer to the [AWS Setup Guide](aws-setup.md).
+
+Key AWS Features:
+- **Amazon ECR**: For private image hosting.
+- **Amazon EKS**: Managed Kubernetes service.
+- **AWS ALB**: Automatically provisioned via Ingress annotations.
+
 ## Verification
 
 ### 1. Access the App
