@@ -58,6 +58,20 @@ Key AWS Features:
 - **Amazon EKS**: Managed Kubernetes service.
 - **AWS ALB**: Automatically provisioned via Ingress annotations.
 
+## Ansible Automation
+
+You can also deploy the entire stack using Ansible. This automates the application of all Kubernetes manifests.
+
+### Prerequisites (Ansible)
+- Ansible installed.
+- `kubernetes` Python library installed (`pip install kubernetes`).
+- `kubernetes.core` collection installed (`ansible-galaxy collection install kubernetes.core`).
+
+### Run the Deployment
+```bash
+ansible-playbook -i ansible/inventory.ini ansible/deploy-app.yml
+```
+
 ## Verification
 
 ### 1. Access the App

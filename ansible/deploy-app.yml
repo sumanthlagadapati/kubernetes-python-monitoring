@@ -1,0 +1,38 @@
+---
+- name: Deploy Kubernetes Python Monitoring Stack
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Ensure Namespace exists
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: python-app
+
+    - name: Deploy Python Application Manifests
+      kubernetes.core.k8s:
+        state: present
+        src: "../manifests/{{ item }}"
+      loop:
+        - deployment.yaml
+        - service-ingress.yaml
+        - hpa.yaml
+
+    - name: Deploy Monitoring Stack
+      kubernetes.core.k8s:
+        state: present
+        src: "../monitoring/prometheus-grafana.yaml"
+
+    - name: Wait for Pods to be ready
+      kubernetes.core.k8s_info:
+        kind: Pod
+        namespace: python-app
+        label_selectors:
+          - app=python-app
+      register: pod_list
+      until: pod_list.resources | length > 0 and pod_list.resources | map(attribute='status.phase') | select('equalto', 'Running') | list | length == pod_list.resources | length
+      retries: 10
+      delay: 10
