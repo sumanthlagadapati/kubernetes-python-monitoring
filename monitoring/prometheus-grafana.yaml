@@ -161,6 +161,11 @@ data:
         url: http://prometheus-svc:9090
         access: proxy
         isDefault: true
+      - name: Loki
+        type: loki
+        url: http://loki:3100
+        access: proxy
+        isDefault: false
 
 ---
 apiVersion: v1

@@ -47,6 +47,7 @@ kubernetes-python-monitoring/
 4.  **Deploy Monitoring Stack**:
     ```bash
     kubectl apply -f monitoring/prometheus-grafana.yaml
+    kubectl apply -f monitoring/loki-promtail.yaml
     ```
 
 ## AWS Implementation
@@ -72,6 +73,8 @@ You can also deploy the entire stack using Ansible. This automates the applicati
 ansible-playbook -i ansible/inventory.ini ansible/deploy-app.yml
 ```
 
+This will automatically deploy the application, Prometheus, Grafana, and Loki (with Promtail) for centralized logging.
+
 ## Verification
 
 ### 1. Access the App
@@ -92,7 +95,17 @@ minikube service grafana-svc -n monitoring
 # Login: admin / admin123
 ```
 
-### 4. Auto-scaling (HPA)
+### 4. View Centralized Logs in Grafana
+
+1. In Grafana, go to **Explore**.
+2. Select the **Loki** data source.
+3. Run log queries (e.g., `{job="varlogs"}`) to view logs collected from your cluster.
+
+### 5. Prebuilt Dashboard Auto-Import
+
+The main Python app monitoring dashboard is now automatically imported into Grafana by the Ansible playbook. After deployment, find it in the Grafana dashboard list as **Python App Monitoring**.
+
+### 6. Auto-scaling (HPA)
 Generate load to trigger scaling:
 ```bash
 kubectl run load-gen --image=busybox -it --rm -n python-app -- \
