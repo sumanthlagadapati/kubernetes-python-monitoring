@@ -1,0 +1,4 @@
+# User-defined Prometheus alert rules will be appended here by the Flask API.
+groups:
+  - name: custom-alerts
+    rules: []

@@ -105,6 +105,52 @@ minikube service grafana-svc -n monitoring
 
 The main Python app monitoring dashboard is now automatically imported into Grafana by the Ansible playbook. After deployment, find it in the Grafana dashboard list as **Python App Monitoring**.
 
+### 6. Custom Prometheus Alert Rules (UI & API)
+
+You can now create your own Prometheus alert rules via the app:
+
+- **Web UI:** Visit `/alerts` on your app (e.g., `http://<app-url>/alerts`) to use a simple form.
+- **API:** POST to `/api/alerts` with JSON or form data:
+  ```json
+  {
+    "alert": "HighCPU",
+    "expr": "sum(rate(cpu_usage[5m])) > 0.8",
+    "for": "1m",
+    "severity": "warning",
+    "summary": "High CPU usage"
+  }
+  ```
+- Rules are stored in `monitoring/custom_alerts.yaml` and can be included in your Prometheus config.
+- **Alert rule names must be unique:**
+  Attempting to create a rule with an existing `alert` name will result in an error.
+  ```json
+  {
+    "error": "Alert rule with name 'HighCPU' already exists"
+  }
+  ```
+
+- **Required fields:**
+  Both `alert` and `expr` are required and must be non-empty strings. If either is missing, empty, or not a string, you will receive:
+  ```json
+  {
+    "error": "'alert' and 'expr' are required non-empty strings"
+  }
+  ```
+
+- **Example of a valid request:**
+  ```json
+  {
+    "alert": "HighCPU",
+    "expr": "sum(rate(cpu_usage[5m])) > 0.8",
+    "for": "1m",
+    "severity": "warning",
+    "summary": "High CPU usage"
+  }
+  ```
+
+- After rule creation, the app triggers a Prometheus reload by POSTing to `/-/reload` on your Prometheus server (default: `http://localhost:9090`).
+- You can override the Prometheus URL by setting the `PROMETHEUS_URL` environment variable.
+
 ### 6. Auto-scaling (HPA)
 Generate load to trigger scaling:
 ```bash
